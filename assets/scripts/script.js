@@ -4,7 +4,7 @@ function calculate(type) {
     const outputBox = document.getElementById("output_box");
 
     errorMsg.classList.add("d-none");
-    outputBox.value = "Output";
+    outputBox.value = "";
 
     if (inputRaw.trim().length === 0) {
         showError("Please enter a number");
@@ -25,6 +25,7 @@ function calculate(type) {
             ch !== "," &&
             ch !== "." &&
             ch !== "-" &&
+            ch !== "+" &&
             ch !== " "
         ) {
             hasSpecial = true;
@@ -45,7 +46,7 @@ function calculate(type) {
     let prevComma = false;
 
     for (let ch of inputRaw.trim()) {
-        if (ch === "," || ch === " ") {
+        if (ch === "," ) {
             if (!prevComma) {
                 normalized += ",";
                 prevComma = true;
@@ -61,6 +62,7 @@ function calculate(type) {
         return;
     }
 
+    normalized = normalized.replace(/\s+/g, "");
     const rawParts = normalized.split(",");
 
     let numbers = [];
@@ -95,7 +97,7 @@ function calculate(type) {
 
 function isValidNumber(value) {
     let dotCount = 0;
-    let minusCount = 0;
+    let signCount = 0;
     let hasDigit = false;
 
     for (let i = 0; i < value.length; i++) {
@@ -112,9 +114,9 @@ function isValidNumber(value) {
             continue;
         }
 
-        if (ch === "-") {
-            minusCount++;
-            if (i !== 0 || minusCount > 1) return false;
+        if (ch === "+" || ch === "-") {
+            signCount++;
+            if (i !== 0 || signCount > 1) return false;
             continue;
         }
 

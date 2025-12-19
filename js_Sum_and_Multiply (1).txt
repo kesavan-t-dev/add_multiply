@@ -1,0 +1,28 @@
+Sum and multiply of numbers.
+
+Create a cfml/html page to have a form with below elements.
+1.You need to create a form with 2 text boxes one for input and other one for Output 
+(display result within this textbox)
+2.A div next to the textbox to show the validation errors.
+3.Create two button one for Add and other one for Multiply next to the div.
+4.Display the result within this second textbox.
+
+Actions & hints:
+While clicking on the button, You need to validate the form with below rules
+1.Enter the values like 1,2,3,4,5.
+2.If the validation passes, you need to display addition values while click the add button For example, sum([1,2,3,4]) should return 10
+3.If you clicked the Multiply button then you need to display the multiplication value For example, multiply([1,2,3,4]) should return 24.
+4.If the validation fails, Tell the reason in DOM rather than an alert to the user why it fails
+
+
+Validation rules:
+
+Below things should be done in appropriate situation, while we try to submit the form. Validation messages should be displayed in a DOM element.. 
+You shouldn't display the message in an alert..
+- If the any one of the text field is empty, you need to display the message "Please enter a number".
+- Outbox should be read only type.
+- If there is any special characters available in the text field, you need to display the message "Special Character(s) not allowed".
+- If there is any letter available in the text field, you need to display the message "letter(s) not allowed".
+- Multiple commas and multiple space should be converted into single comma and space. Ex: 1,,,,,,2,,,     3 should be taken as 1,2,3.
+- Empty spaces in between commas should be omitted Ex:1, ,2,3 should be considered as 1,2,3.
+- Single number is not allowed as input because we need more than one number to manipulate. Ex:1 is not allowed, Input should be in 1,2,3,4 format.
