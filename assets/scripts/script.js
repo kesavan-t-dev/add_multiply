@@ -1,23 +1,20 @@
 function calculate(type) {
     const inputRaw = document.getElementById("user_input").value;
     const errorMsg = document.getElementById("error_msg");
-    const resultMsg = document.getElementById("result_msg");
+    const outputBox = document.getElementById("output_box");
 
     errorMsg.classList.add("d-none");
-    resultMsg.classList.add("d-none");
+    outputBox.value = "Output";
 
-    // 1️⃣ Empty input
     if (inputRaw.trim().length === 0) {
         showError("Please enter a number");
         return;
     }
 
-    let input = inputRaw.trim();
     let hasLetter = false;
     let hasSpecial = false;
 
-    // 2️⃣ Character validation (NO regex)
-    for (let ch of input) {
+    for (let ch of inputRaw) {
         const code = ch.charCodeAt(0);
 
         if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
@@ -25,8 +22,10 @@ function calculate(type) {
         }
         else if (
             !(code >= 48 && code <= 57) &&
-            ch !== "," && ch !== "." &&
-            ch !== "-" && ch !== " "
+            ch !== "," &&
+            ch !== "." &&
+            ch !== "-" &&
+            ch !== " "
         ) {
             hasSpecial = true;
         }
@@ -42,18 +41,11 @@ function calculate(type) {
         return;
     }
 
-    // 3️⃣ Comma at start or end
-    if (input.startsWith(",") || input.endsWith(",")) {
-        showError("Special Character(s) not allowed");
-        return;
-    }
-
-    // 4️⃣ Normalize multiple commas
     let normalized = "";
     let prevComma = false;
 
-    for (let ch of input) {
-        if (ch === ",") {
+    for (let ch of inputRaw.trim()) {
+        if (ch === "," || ch === " ") {
             if (!prevComma) {
                 normalized += ",";
                 prevComma = true;
@@ -64,48 +56,44 @@ function calculate(type) {
         }
     }
 
-    // Remove spaces
-    normalized = normalized.replace(/\s+/g, "");
+    if (normalized.startsWith(",") || normalized.endsWith(",")) {
+        showError("Special Character(s) not allowed");
+        return;
+    }
 
-    const parts = normalized.split(",");
+    const rawParts = normalized.split(",");
 
-    // 5️⃣ Must contain more than one number
-    if (parts.length < 2) {
+    let numbers = [];
+    for (let val of rawParts) {
+        if (val !== "") {
+            numbers.push(val);
+        }
+    }
+    if (numbers.length < 2) {
         showError("Please enter more than one number");
         return;
     }
 
-    let numbers = [];
-
-    // 6️⃣ Validate each number
-    for (let value of parts) {
-        if (!isValidNumber(value)) {
+    let values = [];
+    for (let n of numbers) {
+        if (!isValidNumber(n)) {
             showError("Invalid number(s)");
             return;
         }
-        numbers.push(Number(value));
+        values.push(Number(n));
     }
 
-    let sum = 0;
-    let product = 1;
 
-    for (let num of numbers) {
-        sum += num;
-        product *= num;
+    let result = type === "sum" ? 0 : 1;
+
+    for (let num of values) {
+        result = type === "sum" ? result + num : result * num;
     }
 
-    if (type === "sum") {
-        resultMsg.innerText = `Sum=${sum}`;
-    } else {
-        resultMsg.innerText = `Product=${product}`;
-    }
-
-    resultMsg.classList.remove("d-none");
+    outputBox.value = result;
 }
 
 function isValidNumber(value) {
-    if (value === "" || value === "-" || value === ".") return false;
-
     let dotCount = 0;
     let minusCount = 0;
     let hasDigit = false;
@@ -144,6 +132,6 @@ function showError(message) {
 
 function resetForm() {
     document.getElementById("user_input").value = "";
+    document.getElementById("output_box").value = "";
     document.getElementById("error_msg").classList.add("d-none");
-    document.getElementById("result_msg").classList.add("d-none");
 }
