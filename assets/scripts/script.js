@@ -126,6 +126,11 @@ function isValidNumber(value) {
     return hasDigit;
 }
 
+/*
+function isValidNumberRegex(value) { 
+   return /^[-+]?\d+(\.\d+)?$/.test(value); 
+}
+*/
 function showError(message) {
     const errorMsg = document.getElementById("error_msg");
     errorMsg.innerText = message;
