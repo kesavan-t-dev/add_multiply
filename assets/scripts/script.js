@@ -122,6 +122,7 @@ function decimal_places(strNum) {
     if (idx === -1) return 0;
     return s.length - idx - 1;
 }
+
 function safe_round(num, places) {
     if (places <= 0) return Math.round(num);
     const factor = Math.pow(10, places);
