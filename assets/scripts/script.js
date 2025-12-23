@@ -15,7 +15,6 @@ function calculate(type) {
         return;
     }
 
-    
     for (let ch of inputRaw) {
         const code = ch.charCodeAt(0);
         if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
@@ -36,7 +35,6 @@ function calculate(type) {
         return;
     }
 
-    
     let normalized = "";
     let prevComma = false;
     for (let ch of inputRaw.trim()) {
@@ -56,7 +54,6 @@ function calculate(type) {
         return;
     }
 
-    
     const rawParts = normalized.replace(/\s+/g, "").split(",");
 
     const numbers = [];
@@ -69,7 +66,6 @@ function calculate(type) {
         return;
     }
 
-    
     const values = [];
     const decimalsPerValue = [];
 
@@ -79,7 +75,7 @@ function calculate(type) {
             return;
         }
         values.push(Number(n));
-        decimalsPerValue.push(decimal_places(n));
+        decimalsPerValue.push(n);
     }
 
     let result = type === "sum" ? 0 : 1;
@@ -87,10 +83,8 @@ function calculate(type) {
         result = type === "sum" ? result + num : result * num;
     }
 
-    
-    const maxDecimals = Math.max(...decimalsPerValue);
-    const rounded = safe_round(result, maxDecimals);
-    outputBox.value = strip_zeros(rounded);
+    outputBox.value = processNumber(result, decimalsPerValue);
+
 }
 
 function is_validNumber(value) {
@@ -116,24 +110,29 @@ function is_validNumber(value) {
     return hasDigit;
 }
 
-function decimal_places(strNum) {
-    const s = String(strNum);
-    const idx = s.indexOf(".");
-    if (idx === -1) return 0;
-    return s.length - idx - 1;
-}
 
-function safe_round(num, places) {
-    if (places <= 0) return Math.round(num);
-    const factor = Math.pow(10, places);
-    return Math.round((num + Number.EPSILON) * factor) / factor;
-}
+function processNumber(result, values) {
+    
+    const maxDecimals = Math.max(...values.map(v => {
+        const s = String(v);
+        const idx = s.indexOf(".");
+        return idx === -1 ? 0 : s.length - idx - 1;
+        })
+    );
 
-function strip_zeros(num) {
-    let s = String(num);
-    if (!s.includes(".")) return s;
-    s = s.replace(/(\.\d*?[1-9])0+$/,'$1'); 
-    s = s.replace(/\.0+$/,'');              
+    let rounded;
+    if (maxDecimals <= 0) {
+        rounded = Math.round(result);
+    } else {
+        const factor = Math.pow(10, maxDecimals);
+        rounded = Math.round((result + Number.EPSILON) * factor) / factor;
+    }
+    let s = String(rounded);
+    if (s.includes(".")) {
+        s = s.replace(/(\.\d*?[1-9])0+$/, '$1'); 
+        s = s.replace(/\.0+$/, '');              
+    }
+
     return s;
 }
 
