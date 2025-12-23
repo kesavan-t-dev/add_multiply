@@ -76,6 +76,7 @@ function calculate(type) {
         }
         values.push(Number(n));
         decimalsPerValue.push(n);
+        console.log('decimalpervalue '+ decimalsPerValue)
     }
 
     let result = type === "sum" ? 0 : 1;
@@ -84,6 +85,7 @@ function calculate(type) {
     }
 
     outputBox.value = processNumber(result, decimalsPerValue);
+    console.log('output '+ outputBox.value);
 
 }
 
@@ -113,19 +115,40 @@ function is_validNumber(value) {
 
 function processNumber(result, values) {
     
-    const maxDecimals = Math.max(...values.map(v => {
-        const s = String(v);
-        const idx = s.indexOf(".");
-        return idx === -1 ? 0 : s.length - idx - 1;
-        })
-    );
+    let maxDecimals = 0; 
+
+    for (let i = 0; i < values.length; i++) {
+    const v = values[i];
+    const s = String(v); 
+    console.log("s is " + s);
+
+    const idx = s.indexOf("."); 
+    console.log("index = " + idx);
+    console.log("length is " + s.length);
+
+    let decimals;
+        if (idx === -1) {
+            decimals = 0; 
+            console.log(decimals);
+        } else {
+            decimals = s.length - idx - 1; 
+        }
+        if (decimals > maxDecimals) {
+            maxDecimals = decimals;
+    }
+    }
 
     let rounded;
     if (maxDecimals <= 0) {
         rounded = Math.round(result);
+        console.log('if values below 0 = '+rounded);
     } else {
         const factor = Math.pow(10, maxDecimals);
+        console.log( 'factors '+ factor);
         rounded = Math.round((result + Number.EPSILON) * factor) / factor;
+        console.log(typeof(Number.EPSILON));
+        console.log('number + epsilon '+ Number.EPSILON);
+        console.log('if above from 0 how is it rounded'+rounded)
     }
     let s = String(rounded);
     if (s.includes(".")) {
