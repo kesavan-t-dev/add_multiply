@@ -113,37 +113,12 @@ function is_validNumber(value) {
 
 
 function processNumber(result, values) {
-    
-    let maxDecimals = 0; 
+        const maxDecimals = values.reduce((max, val) => {
+        const parts = val.split(".");
+        return Math.max(max, parts.length > 1 ? parts[1].length : 0);
+    }, 0);
 
-    for (let i = 0; i < values.length; i++) {
-    const v = values[i];
-    const s = String(v); 
-
-    const idx = s.indexOf("."); 
-
-    let decimals;
-        if (idx === -1) {
-            decimals = 0; 
-            console.log(decimals);
-        } else {
-            decimals = s.length - idx - 1; 
-        }
-        if (decimals > maxDecimals) {
-            maxDecimals = decimals;
-    }
-    }
-
-    let rounded;
-    if (maxDecimals <= 0) {
-        rounded = Math.round(result);
-    } else {
-        const factor = Math.pow(10, maxDecimals);
-        rounded = Math.round((result + Number.EPSILON) * factor) / factor;
-    }
-    
-
-    return rounded;
+    return Number(result.toFixed(maxDecimals));
 }
 
 function show_error(message) {
