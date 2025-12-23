@@ -6,13 +6,17 @@ function calculate(type) {
     errorMsg.classList.add("d-none");
     outputBox.value = "";
 
-    if (inputRaw.trim().length === 0) {
-        showError("Please enter a number");
-        return;
-    }
 
     let hasLetter = false;
     let hasSpecial = false;
+
+    let normalized = "";
+    let prevComma = false;
+
+    if (inputRaw.trim().length === 0) {
+        show_error("Please enter a number");
+        return;
+    }   
 
     for (let ch of inputRaw) {
         const code = ch.charCodeAt(0);
@@ -33,17 +37,13 @@ function calculate(type) {
     }
 
     if (hasSpecial) {
-        showError("Special Character(s) not allowed");
+        show_error("Special Character(s) not allowed");
+        return;
+    } else if (hasLetter) {
+        show_error("letter(s) not allowed");
         return;
     }
 
-    if (hasLetter) {
-        showError("letter(s) not allowed");
-        return;
-    }
-
-    let normalized = "";
-    let prevComma = false;
 
     for (let ch of inputRaw.trim()) {
         if (ch === "," ) {
@@ -58,12 +58,12 @@ function calculate(type) {
     }
 
     if (normalized.startsWith(",") || normalized.endsWith(",")) {
-        showError("Special Character(s) not allowed");
+        show_error("Special Character(s) not allowed");
         return;
     }
 
-    normalized = normalized.replace(/\s+/g, "");
-    const rawParts = normalized.split(",");
+    rawParts = normalized.replace(/\s+/g, "").split(",");
+     
 
     let numbers = [];
     for (let val of rawParts) {
@@ -71,15 +71,16 @@ function calculate(type) {
             numbers.push(val);
         }
     }
+    
     if (numbers.length < 2) {
-        showError("Please enter more than one number");
+        show_error("Please enter more than one number");
         return;
     }
 
     let values = [];
     for (let n of numbers) {
-        if (!isValidNumber(n)) {
-            showError("Invalid number(s)");
+        if (!is_validNumber(n)) {
+            show_error("Invalid number(s)");
             return;
         }
         values.push(Number(n));
@@ -95,7 +96,7 @@ function calculate(type) {
     outputBox.value = result;
 }
 
-function isValidNumber(value) {
+function is_validNumber(value) {
     let dotCount = 0;
     let signCount = 0;
     let hasDigit = false;
@@ -106,15 +107,11 @@ function isValidNumber(value) {
         if (ch >= "0" && ch <= "9") {
             hasDigit = true;
             continue;
-        }
-
-        if (ch === ".") {
+        } else if (ch === ".") {
             dotCount++;
             if (dotCount > 1) return false;
             continue;
-        }
-
-        if (ch === "+" || ch === "-") {
+        } else if (ch === "+" || ch === "-") {
             signCount++;
             if (i !== 0 || signCount > 1) return false;
             continue;
@@ -126,18 +123,14 @@ function isValidNumber(value) {
     return hasDigit;
 }
 
-/*
-function isValidNumberRegex(value) { 
-   return /^[-+]?\d+(\.\d+)?$/.test(value); 
-}
-*/
-function showError(message) {
+
+function show_error(message) {
     const errorMsg = document.getElementById("error_msg");
     errorMsg.innerText = message;
     errorMsg.classList.remove("d-none");
 }
 
-function resetForm() {
+function reset_form() {
     document.getElementById("user_input").value = "";
     document.getElementById("output_box").value = "";
     document.getElementById("error_msg").classList.add("d-none");
