@@ -79,7 +79,7 @@ function calculate(type) {
             return;
         }
         values.push(Number(n));
-        decimalsPerValue.push(decimalPlaces(n));
+        decimalsPerValue.push(decimal_places(n));
     }
 
     let result = type === "sum" ? 0 : 1;
@@ -89,8 +89,8 @@ function calculate(type) {
 
     
     const maxDecimals = Math.max(...decimalsPerValue);
-    const rounded = safeRound(result, maxDecimals);
-    outputBox.value = stripZeros(rounded);
+    const rounded = safe_round(result, maxDecimals);
+    outputBox.value = strip_zeros(rounded);
 }
 
 function is_validNumber(value) {
@@ -116,19 +116,19 @@ function is_validNumber(value) {
     return hasDigit;
 }
 
-function decimalPlaces(strNum) {
+function decimal_places(strNum) {
     const s = String(strNum);
     const idx = s.indexOf(".");
     if (idx === -1) return 0;
     return s.length - idx - 1;
 }
-function safeRound(num, places) {
+function safe_round(num, places) {
     if (places <= 0) return Math.round(num);
     const factor = Math.pow(10, places);
     return Math.round((num + Number.EPSILON) * factor) / factor;
 }
 
-function stripZeros(num) {
+function strip_zeros(num) {
     let s = String(num);
     if (!s.includes(".")) return s;
     s = s.replace(/(\.\d*?[1-9])0+$/,'$1'); 
