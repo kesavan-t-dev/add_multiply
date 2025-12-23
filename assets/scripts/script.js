@@ -85,7 +85,6 @@ function calculate(type) {
     }
 
     outputBox.value = processNumber(result, decimalsPerValue);
-    console.log('output '+ outputBox.value);
 
 }
 
@@ -120,11 +119,8 @@ function processNumber(result, values) {
     for (let i = 0; i < values.length; i++) {
     const v = values[i];
     const s = String(v); 
-    console.log("s is " + s);
 
     const idx = s.indexOf("."); 
-    console.log("index = " + idx);
-    console.log("length is " + s.length);
 
     let decimals;
         if (idx === -1) {
@@ -141,22 +137,13 @@ function processNumber(result, values) {
     let rounded;
     if (maxDecimals <= 0) {
         rounded = Math.round(result);
-        console.log('if values below 0 = '+rounded);
     } else {
         const factor = Math.pow(10, maxDecimals);
-        console.log( 'factors '+ factor);
         rounded = Math.round((result + Number.EPSILON) * factor) / factor;
-        console.log(typeof(Number.EPSILON));
-        console.log('number + epsilon '+ Number.EPSILON);
-        console.log('if above from 0 how is it rounded'+rounded)
     }
-    let s = String(rounded);
-    if (s.includes(".")) {
-        s = s.replace(/(\.\d*?[1-9])0+$/, '$1'); 
-        s = s.replace(/\.0+$/, '');              
-    }
+    
 
-    return s;
+    return rounded;
 }
 
 function show_error(message) {
