@@ -1,3 +1,4 @@
+
 function calculate(type) {
     const inputRaw = document.getElementById("user_input").value;
     const errorMsg = document.getElementById("error_msg");
@@ -6,31 +7,22 @@ function calculate(type) {
     errorMsg.classList.add("d-none");
     outputBox.value = "";
 
-
     let hasLetter = false;
     let hasSpecial = false;
-
-    let normalized = "";
-    let prevComma = false;
 
     if (inputRaw.trim().length === 0) {
         show_error("Please enter a number");
         return;
-    }   
+    }
 
+    
     for (let ch of inputRaw) {
         const code = ch.charCodeAt(0);
-
         if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
             hasLetter = true;
-        }
-        else if (
+        } else if (
             !(code >= 48 && code <= 57) &&
-            ch !== "," &&
-            ch !== "." &&
-            ch !== "-" &&
-            ch !== "+" &&
-            ch !== " "
+            ch !== "," && ch !== "." && ch !== "-" && ch !== "+" && ch !== " "
         ) {
             hasSpecial = true;
         }
@@ -44,9 +36,11 @@ function calculate(type) {
         return;
     }
 
-
+    
+    let normalized = "";
+    let prevComma = false;
     for (let ch of inputRaw.trim()) {
-        if (ch === "," ) {
+        if (ch === ",") {
             if (!prevComma) {
                 normalized += ",";
                 prevComma = true;
@@ -62,38 +56,41 @@ function calculate(type) {
         return;
     }
 
-    rawParts = normalized.replace(/\s+/g, "").split(",");
-     
-
-    let numbers = [];
-    for (let val of rawParts) {
-        if (val !== "") {
-            numbers.push(val);
-        }
-    }
     
+    const rawParts = normalized.replace(/\s+/g, "").split(",");
+
+    const numbers = [];
+    for (const val of rawParts) {
+        if (val !== "") numbers.push(val);
+    }
+
     if (numbers.length < 2) {
         show_error("Please enter more than one number");
         return;
     }
 
-    let values = [];
-    for (let n of numbers) {
+    
+    const values = [];
+    const decimalsPerValue = [];
+
+    for (const n of numbers) {
         if (!is_validNumber(n)) {
             show_error("Invalid number(s)");
             return;
         }
         values.push(Number(n));
+        decimalsPerValue.push(decimalPlaces(n));
     }
 
-
     let result = type === "sum" ? 0 : 1;
-
-    for (let num of values) {
+    for (const num of values) {
         result = type === "sum" ? result + num : result * num;
     }
 
-    outputBox.value = result;
+    
+    const maxDecimals = Math.max(...decimalsPerValue);
+    const rounded = safeRound(result, maxDecimals);
+    outputBox.value = stripZeros(rounded);
 }
 
 function is_validNumber(value) {
@@ -106,23 +103,38 @@ function is_validNumber(value) {
 
         if (ch >= "0" && ch <= "9") {
             hasDigit = true;
-            continue;
         } else if (ch === ".") {
             dotCount++;
             if (dotCount > 1) return false;
-            continue;
         } else if (ch === "+" || ch === "-") {
             signCount++;
             if (i !== 0 || signCount > 1) return false;
-            continue;
+        } else {
+            return false; 
         }
-
-        return false;
     }
-
     return hasDigit;
 }
 
+function decimalPlaces(strNum) {
+    const s = String(strNum);
+    const idx = s.indexOf(".");
+    if (idx === -1) return 0;
+    return s.length - idx - 1;
+}
+function safeRound(num, places) {
+    if (places <= 0) return Math.round(num);
+    const factor = Math.pow(10, places);
+    return Math.round((num + Number.EPSILON) * factor) / factor;
+}
+
+function stripZeros(num) {
+    let s = String(num);
+    if (!s.includes(".")) return s;
+    s = s.replace(/(\.\d*?[1-9])0+$/,'$1'); 
+    s = s.replace(/\.0+$/,'');              
+    return s;
+}
 
 function show_error(message) {
     const errorMsg = document.getElementById("error_msg");
@@ -135,3 +147,4 @@ function reset_form() {
     document.getElementById("output_box").value = "";
     document.getElementById("error_msg").classList.add("d-none");
 }
+
