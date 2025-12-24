@@ -76,7 +76,6 @@ function calculate(type) {
         }
         values.push(Number(n));
         decimalsPerValue.push(n);
-        console.log('decimalpervalue '+ decimalsPerValue)
     }
 
     let result = type === "sum" ? 0 : 1;
@@ -84,7 +83,7 @@ function calculate(type) {
         result = type === "sum" ? result + num : result * num;
     }
 
-    outputBox.value = processNumber(result, decimalsPerValue);
+    outputBox.value = process_number(result, decimalsPerValue);
 
 }
 
@@ -117,17 +116,14 @@ let maxDecimals = 0;
     
 
   for (let val of values) {        
-
   const parts = val.split('.');
-           
 
      if (parts.length > 1) {            
       const decimalLength = parts[1].length;
-            if (decimalLength > maxDecimals) {                         
-                maxDecimals = decimalLength;        
-           }   
+        if (decimalLength > maxDecimals) {                         
+            maxDecimals = decimalLength;        
+        }   
      }   
-
  }
   return Number(result.toFixed(maxDecimals));
 }
