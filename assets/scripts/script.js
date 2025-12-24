@@ -113,6 +113,7 @@ function is_validNumber(value) {
 
 function process_number(result,values ) {    
 
+<<<<<<< HEAD
 let maxDecimals = 0;
     
 
@@ -130,6 +131,15 @@ let maxDecimals = 0;
 
  }
   return Number(result.toFixed(maxDecimals));
+=======
+function processNumber(result, values) {
+        const maxDecimals = values.reduce((max, val) => {
+        const parts = val.split(".");
+        return Math.max(max, parts.length > 1 ? parts[1].length : 0);
+    }, 0);
+
+    return Number(result.toFixed(maxDecimals));
+>>>>>>> 0d531dc5056440a39c8b817ef4099d88c6b4b2fc
 }
 
 function show_error(message) {
