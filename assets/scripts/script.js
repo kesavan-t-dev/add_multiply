@@ -111,7 +111,7 @@ function is_validNumber(value) {
     return hasDigit;
 }
 
-function processNumber(result,values ) {    
+function process_number(result,values ) {    
 
 let maxDecimals = 0;
     
